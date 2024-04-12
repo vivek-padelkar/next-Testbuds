@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import getCategory from '../_utils/globalApi'
+import { getCategory } from '../_utils/globalApi'
 import { useEffect, useState } from 'react'
 
 const Header = () => {

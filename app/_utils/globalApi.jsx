@@ -5,5 +5,7 @@ const axisoClient = axios.create({
 })
 
 const getCategory = () => axisoClient.get('/categories?populate=*')
+const getSliders = () =>
+  axisoClient.get('/sliders/?populate=*').then((res) => res.data.data)
 
-export default getCategory
+export { getCategory, getSliders }
