@@ -10,4 +10,7 @@ const getSliders = () =>
 const getCategoryList = () =>
   axisoClient.get('/categories/?populate=*').then((res) => res.data.data)
 
-export { getCategory, getSliders, getCategoryList }
+const getAllProducts = () =>
+  axisoClient.get('/products/?populate=*').then((res) => res.data.data)
+
+export { getCategory, getSliders, getCategoryList, getAllProducts }
