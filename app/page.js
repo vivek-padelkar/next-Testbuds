@@ -1,6 +1,8 @@
+import Image from 'next/image'
 import CategoryList from './_components/CategoryList'
 import ProductList from './_components/ProductList'
 import Sliders from './_components/Sliders'
+import Footer from './_components/Footer'
 import { getAllProducts, getCategoryList, getSliders } from './_utils/globalApi'
 
 export default async function Home() {
@@ -16,6 +18,14 @@ export default async function Home() {
       <CategoryList categoryList={categoryList} />
       {/* product list */}
       <ProductList productList={productList} />
+      {/* banner */}
+      <Image
+        src={`/banner.jpeg`}
+        height={300}
+        width={1000}
+        className="object-cover w-[100vw] h-[400px] mt-8"
+      />
+      <Footer />
     </div>
   )
 }

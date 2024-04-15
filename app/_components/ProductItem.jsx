@@ -1,5 +1,15 @@
-import { Button } from '@/components/ui/button'
 import Image from 'next/image'
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import ProductItemDetails from './ProductItemDetails'
+
 const ProductItem = ({ product }) => {
   return (
     <div
@@ -34,12 +44,19 @@ const ProductItem = ({ product }) => {
           {product?.attributes?.mrp} &#8377;
         </h2>
       </div>
-      <Button
-        variant="outline"
-        className="text-primary hover:text-white hover:bg-primary"
-      >
-        Add to cart
-      </Button>
+
+      <Dialog>
+        <DialogTrigger className="text-primary p-2 rounded-xl border border-primary hover:text-white hover:bg-primary">
+          Add to cart
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogDescription>
+              <ProductItemDetails product={product} />
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
