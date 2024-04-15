@@ -10,11 +10,7 @@ const ProductList = ({ productList }) => {
       <div className="grid gap-5 grid-cols-1 md:grid-cols-3 lg:grid-cols-4">
         {productList.map(
           (prod, index) =>
-            index <= 7 && (
-              <div>
-                <ProductItem product={prod} />
-              </div>
-            )
+            index <= 7 && <ProductItem key={index} product={prod} />
         )}
       </div>
     </div>

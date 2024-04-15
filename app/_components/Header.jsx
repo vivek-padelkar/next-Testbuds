@@ -1,5 +1,6 @@
 'use client'
 import Image from 'next/image'
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { LayoutGrid, Search, ShoppingBag } from 'lucide-react'
 import {
@@ -48,19 +49,21 @@ const Header = () => {
             {categoryList.length > 0 &&
               categoryList.map(
                 (cat) => (
-                  <DropdownMenuItem
-                    key={cat?.attributes?.name}
-                    className="flex gap-2 items-center cursor-pointer"
-                  >
-                    <Image
-                      src={`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}${cat?.attributes?.icon?.data[0]?.attributes?.url}`}
-                      alt={`${cat?.attributes?.name}`}
-                      width={30}
-                      height={30}
-                      unoptimized={true}
-                    />
-                    <h2 className="font-semibold">{cat?.attributes?.name}</h2>
-                  </DropdownMenuItem>
+                  <Link href={`/product-category/${cat?.attributes?.name}`}>
+                    <DropdownMenuItem
+                      key={cat?.attributes?.name}
+                      className="flex gap-2 items-center cursor-pointer"
+                    >
+                      <Image
+                        src={`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}${cat?.attributes?.icon?.data[0]?.attributes?.url}`}
+                        alt={`${cat?.attributes?.name}`}
+                        width={30}
+                        height={30}
+                        unoptimized={true}
+                      />
+                      <h2 className="font-semibold">{cat?.attributes?.name}</h2>
+                    </DropdownMenuItem>
+                  </Link>
                 )
                 //
               )}

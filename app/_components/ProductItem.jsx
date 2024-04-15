@@ -1,22 +1,24 @@
 import Image from 'next/image'
-import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+// import {Link} from 'react'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
 import ProductItemDetails from './ProductItemDetails'
 
-const ProductItem = ({ product }) => {
+const ProductItem = ({ key, product }) => {
+  const productName = product?.attributes?.name
   return (
     <div
       className=" cursor-pointer p-2 md:p-6 flex flex-col 
     justify-center items-center gap-3 border rounded-lg
     truncate hover:scale-110 hover:shadow-md
     transition-all ease-in-out duration-200"
+      key={key}
     >
       <Image
         src={
@@ -25,12 +27,10 @@ const ProductItem = ({ product }) => {
         }
         width={500}
         height={200}
-        alt={product?.attributes?.name}
+        alt={productName}
         className="h-[200px] w-[200px] object-contain"
       />
-      <h2 className="text-green-800 font-semibold text-lg">
-        {product?.attributes?.name}
-      </h2>
+      <h2 className="text-green-800 font-semibold text-lg">{productName}</h2>
       <div className="flex gap-2">
         {product?.attributes?.sellingPrice && (
           <h2 className="`text-green-800 font-semibold text-lg">

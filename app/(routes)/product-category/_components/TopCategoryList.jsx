@@ -1,18 +1,18 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-const CategoryList = ({ categoryList }) => {
+const TopCategoryList = ({ categoryList }) => {
   return (
     <div className="mt-5">
       <h2 className="mb-5 text-green-700 text-2xl font-bold">
         Shop by Category
       </h2>
-      <div className="grid gap-5 grid-cols-1 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7">
+      <div className="flex gap-5 mt-2 overflow-scroll mx-7 md:mx-20">
         {categoryList.map((cat, index) => (
           <Link
             href={`/product-category/${cat?.attributes?.name}`}
             className="p-4 cursor-pointer rounded-xl flex items-center 
-          flex-col bg-green-50 gap-2 hover:bg-green-200"
+          flex-col bg-green-50 gap-2 hover:bg-green-200 w-[150px] min-w-[100px]"
           >
             <Image
               key={cat.attributes.name}
@@ -35,4 +35,4 @@ const CategoryList = ({ categoryList }) => {
   )
 }
 
-export default CategoryList
+export default TopCategoryList
