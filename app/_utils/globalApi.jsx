@@ -30,7 +30,6 @@ const registerUser = async (reqBody) => {
     const data = await axisoClient.post('/auth/local/register', reqBody)
     return { user: data.data.user, token: data.data.jwt }
   } catch (error) {
-    // console.log('An error occurred:', error.response)
     throw error
   }
 }
@@ -41,10 +40,37 @@ const signinUser = async (reqBody) => {
       identifier: reqBody.email,
       password: reqBody.password,
     })
-    console.log(data)
     return { user: data.data.user, token: data.data.jwt }
   } catch (error) {
-    // console.log('An error occurred:', error.response)
+    throw error
+  }
+}
+
+const addToCart = async (reqBody, jwt) => {
+  try {
+    const headers = {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    }
+    await axisoClient.post('/user-carts', reqBody, headers)
+  } catch (error) {
+    throw error
+  }
+}
+const getCartItems = async (userid, token) => {
+  try {
+    const headers = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+    const data = await axisoClient.get(
+      `/user-carts?filters[userid][$eq]=${userid}&populate=*`,
+      headers
+    )
+    return data.data
+  } catch (error) {
     throw error
   }
 }
@@ -57,4 +83,6 @@ export {
   getAllProductsByCategory,
   registerUser,
   signinUser,
+  addToCart,
+  getCartItems,
 }

@@ -8,7 +8,6 @@ import {
 } from '@/components/ui/carousel'
 
 const Sliders = ({ sliderList }) => {
-  console.log(sliderList[0]?.attributes)
   return (
     <Carousel className="">
       <CarouselContent>

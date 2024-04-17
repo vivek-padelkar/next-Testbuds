@@ -11,27 +11,50 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { getCategory } from '../_utils/globalApi'
-import { useEffect, useState } from 'react'
+import { getCartItems, getCategory } from '../_utils/globalApi'
+import { useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
+import { UpdateCartContext } from '../_context/UpdateCartContext'
 
 const Header = () => {
   const router = useRouter()
+  const { updateCart, setUpdateCart } = useContext(UpdateCartContext)
   const [categoryList, setCategoryList] = useState([])
-  const token = sessionStorage.getItem('jwt')
+  const [totalCartItem, setTotalCartItem] = useState(0)
+  const token =
+    typeof window !== 'undefined' ? sessionStorage.getItem('jwt') : null
+  const user =
+    typeof window !== 'undefined'
+      ? JSON.parse(sessionStorage.getItem('user'))
+      : null
+
   useEffect(() => {
     const getCategoies = async () => {
       const { data } = await getCategory()
       setCategoryList(data.data)
-      console.log(data.data[0].id)
     }
     getCategoies()
   }, [])
 
+  useEffect(() => {
+    handleCartItems()
+  }, [updateCart])
+
   const handleLogOut = () => {
-    console.log('called')
     sessionStorage.clear()
     router.push('/sign-in')
+  }
+
+  const handleCartItems = async () => {
+    try {
+      if (token && user) {
+        const cartItem = await getCartItems(user.id, token)
+        setTotalCartItem(cartItem?.data?.length)
+      }
+    } catch (error) {
+      toast(error.response?.data?.error?.message || error.message)
+    }
   }
   return (
     <div className="flex flex-col items-center justify-center gap-2 sm:flex-row p-5 shadow-sm justify-between">
@@ -86,7 +109,12 @@ const Header = () => {
 
       <div className="flex items-center gap-8">
         <h2 className="flex gap-2 items-center text-lg">
-          <ShoppingBag />0
+          <ShoppingBag />
+          {totalCartItem > 0 && (
+            <span className="bg-primary text-white px-2 rounded-full">
+              {totalCartItem}
+            </span>
+          )}
         </h2>
         {!token ? (
           <Link

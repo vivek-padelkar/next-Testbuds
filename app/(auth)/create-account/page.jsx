@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import { registerUser } from '@/app/_utils/globalApi'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 
 const CreateAccount = () => {
   const router = useRouter()
@@ -49,14 +50,12 @@ const CreateAccount = () => {
       router.push('/')
     } catch (error) {
       setLoading(false)
-      console.log('cleared')
       setUserData({
         username: '',
         email: '',
         password: '',
         confirmPassword: '',
       })
-      console.log(errors)
       toast(error.response?.data?.error?.message || error.message)
     }
   }

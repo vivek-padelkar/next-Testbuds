@@ -48,14 +48,13 @@ const Signin = () => {
       router.push('/')
     } catch (error) {
       setLoading(false)
-      console.log('cleared')
       setUserData({
         username: '',
         email: '',
         password: '',
         confirmPassword: '',
       })
-      console.log(error)
+      
       toast(error.response?.data?.error?.message || error.message)
     }
   }
