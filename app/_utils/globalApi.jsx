@@ -25,10 +25,36 @@ const getAllProductsByCategory = (category) =>
     .get(`/products?filters[categories][name][$in]=${category}&populate=*`)
     .then((res) => res.data.data)
 
+const registerUser = async (reqBody) => {
+  try {
+    const data = await axisoClient.post('/auth/local/register', reqBody)
+    return { user: data.data.user, token: data.data.jwt }
+  } catch (error) {
+    // console.log('An error occurred:', error.response)
+    throw error
+  }
+}
+
+const signinUser = async (reqBody) => {
+  try {
+    const data = await axisoClient.post('/auth/local', {
+      identifier: reqBody.email,
+      password: reqBody.password,
+    })
+    console.log(data)
+    return { user: data.data.user, token: data.data.jwt }
+  } catch (error) {
+    // console.log('An error occurred:', error.response)
+    throw error
+  }
+}
+
 export {
   getCategory,
   getSliders,
   getCategoryList,
   getAllProducts,
   getAllProductsByCategory,
+  registerUser,
+  signinUser,
 }
