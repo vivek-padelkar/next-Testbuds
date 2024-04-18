@@ -1,7 +1,6 @@
 'use client'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 import { LayoutGrid, Search, ShoppingBag, CircleUserRound } from 'lucide-react'
 import {
   DropdownMenu,
@@ -17,11 +16,23 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { UpdateCartContext } from '../_context/UpdateCartContext'
 
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
+import CartItemList from './CartItemList'
+
 const Header = () => {
   const router = useRouter()
   const { updateCart, setUpdateCart } = useContext(UpdateCartContext)
   const [categoryList, setCategoryList] = useState([])
   const [totalCartItem, setTotalCartItem] = useState(0)
+  const [cartItemList, setCartItemList] = useState([])
+
   const token =
     typeof window !== 'undefined' ? sessionStorage.getItem('jwt') : null
   const user =
@@ -49,8 +60,9 @@ const Header = () => {
   const handleCartItems = async () => {
     try {
       if (token && user) {
-        const cartItem = await getCartItems(user.id, token)
-        setTotalCartItem(cartItem?.data?.length)
+        const cartItemsList = await getCartItems(user.id, token)
+        setTotalCartItem(cartItemsList?.length)
+        setCartItemList(cartItemsList)
       }
     } catch (error) {
       toast(error.response?.data?.error?.message || error.message)
@@ -109,7 +121,22 @@ const Header = () => {
 
       <div className="flex items-center gap-8">
         <h2 className="flex gap-2 items-center text-lg">
-          <ShoppingBag />
+          <Sheet>
+            <SheetTrigger>
+              <ShoppingBag />
+            </SheetTrigger>
+            <SheetContent>
+              <SheetHeader>
+                <SheetTitle className="bg-primary text-white block mt-6 p-1 font-bold">
+                  My cart
+                </SheetTitle>
+                <SheetDescription>
+                  <CartItemList cartItemList={cartItemList} />
+                </SheetDescription>
+              </SheetHeader>
+            </SheetContent>
+          </Sheet>
+
           {totalCartItem > 0 && (
             <span className="bg-primary text-white px-2 rounded-full">
               {totalCartItem}

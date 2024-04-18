@@ -65,12 +65,30 @@ const getCartItems = async (userid, token) => {
         Authorization: `Bearer ${token}`,
       },
     }
-    const data = await axisoClient.get(
-      `/user-carts?filters[userid][$eq]=${userid}&populate=*`,
+    const { data } = await axisoClient.get(
+      `/user-carts?filters[userid][$eq]=${userid}&[populate][product][populate][images][populate][0]=url`,
       headers
     )
-    return data.data
+
+    const result = data.data
+    const cartItemsList = result.map((item, index) => {
+      console.log(item?.attributes?.product?.data?.attributes?.name)
+      return {
+        name: item?.attributes?.product?.data?.attributes?.name,
+        quantity: item.attributes.quantity,
+        amount: item.attributes.amount,
+        image:
+          process.env.NEXT_PUBLIC_BACKEND_BASE_URL +
+          item?.attributes?.product?.data?.attributes?.images?.data[0]
+            ?.attributes?.url,
+        actualPrice: item?.attributes?.product?.data?.attributes?.mrp,
+        id: item.id,
+      }
+    })
+
+    return cartItemsList
   } catch (error) {
+    console.log(error)
     throw error
   }
 }
