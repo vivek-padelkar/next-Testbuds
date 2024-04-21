@@ -93,6 +93,16 @@ const getCartItems = async (userid, token) => {
   }
 }
 
+const deleteCartItem = async (id, token) => {
+  const headers = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+  await axisoClient.delete(`/user-carts/${id}`, headers)
+  return true
+}
+
 export {
   getCategory,
   getSliders,
@@ -103,4 +113,5 @@ export {
   signinUser,
   addToCart,
   getCartItems,
+  deleteCartItem,
 }

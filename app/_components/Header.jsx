@@ -10,7 +10,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { getCartItems, getCategory } from '../_utils/globalApi'
+import { Button } from '@/components/ui/button'
+import { deleteCartItem, getCartItems, getCategory } from '../_utils/globalApi'
 import { useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
@@ -18,6 +19,7 @@ import { UpdateCartContext } from '../_context/UpdateCartContext'
 
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetDescription,
   SheetHeader,
@@ -32,6 +34,7 @@ const Header = () => {
   const [categoryList, setCategoryList] = useState([])
   const [totalCartItem, setTotalCartItem] = useState(0)
   const [cartItemList, setCartItemList] = useState([])
+  const [subTotal, setSubTotal] = useState(0)
 
   const token =
     typeof window !== 'undefined' ? sessionStorage.getItem('jwt') : null
@@ -52,6 +55,14 @@ const Header = () => {
     handleCartItems()
   }, [updateCart])
 
+  useEffect(() => {
+    let total = 0
+    cartItemList.forEach((item) => {
+      total = total + Number(item.amount.toString(2))
+    })
+    setSubTotal(total)
+  }, [cartItemList])
+
   const handleLogOut = () => {
     sessionStorage.clear()
     router.push('/sign-in')
@@ -67,6 +78,12 @@ const Header = () => {
     } catch (error) {
       toast(error.response?.data?.error?.message || error.message)
     }
+  }
+
+  const onDelteItem = async (id) => {
+    await deleteCartItem(id, token)
+    toast('Item removed from cart')
+    await handleCartItems()
   }
   return (
     <div className="flex flex-col items-center justify-center gap-2 sm:flex-row p-5 shadow-sm justify-between">
@@ -131,9 +148,27 @@ const Header = () => {
                   My cart
                 </SheetTitle>
                 <SheetDescription>
-                  <CartItemList cartItemList={cartItemList} />
+                  <CartItemList
+                    cartItemList={cartItemList}
+                    onDelteItem={onDelteItem}
+                  />
                 </SheetDescription>
               </SheetHeader>
+              <SheetClose asChild>
+                <div className="absolute w-[90%] bottom-6 flex flex-col">
+                  <h2 className="flex text-lg font-bold fle justify-between">
+                    Subtotal
+                    <span>{subTotal} &#8377;</span>
+                  </h2>
+                  <Button
+                    onClick={() =>
+                      token ? router.push(`/checkout`) : router.push(`/sign-in`)
+                    }
+                  >
+                    Checkout
+                  </Button>
+                </div>
+              </SheetClose>
             </SheetContent>
           </Sheet>
 
