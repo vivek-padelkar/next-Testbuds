@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { useRouter } from 'next/navigation'
+import { PayPalButtons } from '@paypal/react-paypal-js'
 import {
   deleteCartItem,
   getCartItems,
@@ -35,8 +36,11 @@ const Checkout = () => {
       : null
 
   useEffect(() => {
-    if (!token) router.push('/sign-in')
-    handleCartItems()
+    if (!token) {
+      router.push('/sign-in')
+    } else {
+      handleCartItems()
+    }
   }, [])
 
   const handleCartItems = async () => {
@@ -56,14 +60,14 @@ const Checkout = () => {
     cartItemList.forEach((item) => {
       total = total + Number(item.amount.toString(2))
     })
-    setSubTotal(total)
     const tax = (total * (2 / 100)).toFixed(2)
+    setTotal(Number(tax) + Number(subTotal) + 10)
+    setSubTotal(total)
     setTax(tax)
   }, [cartItemList])
 
   const calculateAmout = () => {
     const finalTotal = Number(tax) + Number(subTotal) + 10
-    // setTotal(finalTotal)
     return finalTotal
   }
 
@@ -80,6 +84,22 @@ const Checkout = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
     toast('data added')
+  }
+  const onApprove = (data) => {
+    console.log(data)
+    console.log(cartItemList)
+
+    userData.paymentId = data.paymentID
+    userData.totalOrderAmount = total
+    console.log(userData)
+    const payload = {
+      data: {
+        ...userData,
+        orderItemList: cartItemList,
+      },
+    }
+
+    console.log(payload)
   }
   return (
     <div className="">
@@ -143,26 +163,39 @@ const Checkout = () => {
               <h2 className="font-bold flex justify-between">
                 Subtotal:<span>{subTotal.toFixed(2)} &#8377;</span>
               </h2>
-
               <hr></hr>
-
               <h2 className="flex justify-between">
                 Delivery:<span>{'10.00'} &#8377;</span>
               </h2>
-
               <h2 className="flex justify-between">
                 Tax (2%):<span>{tax} &#8377;</span>
               </h2>
-
               <hr></hr>
-
               <h2 className="font-bold flex justify-between">
                 Total:<span>{calculateAmout()} &#8377;</span>
               </h2>
-
-              <Button>
-                Payment <ArrowBigRight />
-              </Button>
+              {/* 4032031893631019 
+              08/2026
+              788
+              pin 89012
+              */}
+              <PayPalButtons
+                type="submit"
+                style={{ layout: 'horizontal' }}
+                onApprove={onApprove}
+                createOrder={(data, actions) => {
+                  return actions.order.create({
+                    purchase_units: [
+                      {
+                        amount: {
+                          value: total,
+                          currency_code: `USD`,
+                        },
+                      },
+                    ],
+                  })
+                }}
+              ></PayPalButtons>
             </div>
           </div>
         </div>

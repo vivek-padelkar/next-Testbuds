@@ -72,7 +72,6 @@ const getCartItems = async (userid, token) => {
 
     const result = data.data
     const cartItemsList = result.map((item, index) => {
-      console.log(item?.attributes?.product?.data?.attributes?.name)
       return {
         name: item?.attributes?.product?.data?.attributes?.name,
         quantity: item.attributes.quantity,
@@ -83,6 +82,7 @@ const getCartItems = async (userid, token) => {
             ?.attributes?.url,
         actualPrice: item?.attributes?.product?.data?.attributes?.mrp,
         id: item.id,
+        product: item?.attributes?.product?.data?.id,
       }
     })
 
